@@ -41,8 +41,9 @@ angular.module('conFusion.controllers', [])
   };
 })
 
-.controller('MenuController', ['$scope', 'menuFactory', function($scope, menuFactory) {
+.controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function($scope, menuFactory, baseURL) {
 
+	$scope.baseURL = baseURL;
 	$scope.tab = 1;
 	$scope.filtText = '';
 	$scope.showDetails = false;
@@ -117,8 +118,9 @@ angular.module('conFusion.controllers', [])
 	};
 }])
 
-.controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', function($scope, $stateParams, menuFactory) {
+.controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL', function($scope, $stateParams, menuFactory, baseURL) {
 
+	$scope.baseURL = baseURL;
 	$scope.dish = {};
 	$scope.showDish = false;
 	$scope.message="Loading ...";
@@ -134,6 +136,15 @@ angular.module('conFusion.controllers', [])
 					}
 	);
 
+	// Variables for star rating directive
+			$scope.rating1 = 5;
+			// Readonly set to true and can not be changed use it for comment edit
+			$scope.isReadonly = true;
+			// logging selected value to console only
+			$scope.rateFunction = function(rating) {
+console.log('Rating selected: ' + rating);
+			};
+
 
 }])
 
@@ -143,13 +154,20 @@ angular.module('conFusion.controllers', [])
 
 	$scope.submitComment = function () {
 
-		$scope.mycomment.date = new Date().toISOString();
-		console.log($scope.mycomment);
+ 				//Step 2: This is how you record the date
+                $scope.myComment.date = new Date().toISOString();
+				$scope.myComment.rating = $scope.rating1;
+console.log($scope.mycomment);
 
-		$scope.dish.comments.push($scope.mycomment);
-		menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
+                // Step 3: Push your comment into the dish's comment array
+                $scope.dish.comments.push($scope.myComment);
 
-		$scope.commentForm.$setPristine();
+				// update/PUT comment to server
+				menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
+
+                //Step 4: reset your form to pristine
+				$scope.commentForm.$setPristine();
+				$scope.rating1 = 5;
 
 		$scope.mycomment = {rating:5, comment:"", author:"", date:""};
 	}
@@ -187,3 +205,53 @@ angular.module('conFusion.controllers', [])
 
 // Final closing semicolon after last controller
 ;
+
+// Star rating directive - do not delete.
+// Variables in DishDetailController,
+		angular.module('conFusion').directive('starRating', function () {
+			return {
+				  restrict: 'EA',
+				  template:
+					'<ul class="star-rating" ng-class="{readonly: readonly}">' +
+					'  <li ng-repeat="star in stars" class="star" ng-class="{filled: star.filled}" ng-click="toggle($index)">' +
+					'    <i class="icon ion-star"></i>' + // or &#9733
+					'  </li>' +
+					'</ul>',
+				  scope: {
+					ratingValue: '=ngModel',
+					max: '=?', // optional (default is 5)
+					onRatingSelect: '&?',
+					readonly: '=?'
+				  },
+
+				  link: function(scope, element, attributes) {
+					if (scope.max === undefined) {
+					  scope.max = 5;
+					}
+
+					function updateStars() {
+					  scope.stars = [];
+					  for (var i = 0; i < scope.max; i++) {
+						scope.stars.push({
+						  filled: i < scope.ratingValue
+						});
+					  }
+					}
+
+					scope.toggle = function(index) {
+					  if (scope.readonly === undefined || scope.readonly === false){
+						scope.ratingValue = index + 1;
+						scope.onRatingSelect({
+						  rating: index + 1
+						});
+					  }
+					};
+
+					scope.$watch('ratingValue', function(oldValue, newValue) {
+					  if (newValue) {
+						updateStars();
+					  }
+					});
+				  }
+				};
+			});
