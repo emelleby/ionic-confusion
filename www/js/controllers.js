@@ -1,44 +1,44 @@
 angular.module('conFusion.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+.controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
 
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+	// With the new view caching in Ionic, Controllers are only called
+	// when they are recreated or on app start, instead of every page change.
+	// To listen for when this page is active (for example, to refresh data),
+	// listen for the $ionicView.enter event:
+	//$scope.$on('$ionicView.enter', function(e) {
+	//});
 
-  // Form data for the login modal
-  $scope.loginData = {};
+	// Form data for the login modal
+	$scope.loginData = {};
 
-  // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
+	// Create the login modal that we will use later
+	$ionicModal.fromTemplateUrl('templates/login.html', {
+		scope: $scope
+	}).then(function (modal) {
+		$scope.modal = modal;
+	});
 
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
+	// Triggered in the login modal to close it
+	$scope.closeLogin = function () {
+		$scope.modal.hide();
+	};
 
-  // Open the login modal
-  $scope.login = function() {
-    $scope.modal.show();
-  };
+	// Open the login modal
+	$scope.login = function () {
+		$scope.modal.show();
+	};
 
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
+	// Perform the login action when the user submits the login form
+	$scope.doLogin = function () {
+		console.log('Doing login', $scope.loginData);
 
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
-  };
+		// Simulate a login delay. Remove this and replace with your login
+		// code if using a login system
+		$timeout(function () {
+			$scope.closeLogin();
+		}, 1000);
+	};
 })
 
 .controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function($scope, menuFactory, baseURL) {
@@ -137,7 +137,7 @@ angular.module('conFusion.controllers', [])
 	);
 
 	// Variables for star rating directive
-			$scope.rating1 = 5;
+			//$scope.rating1 = 5;
 			// Readonly set to true and can not be changed use it for comment edit
 			$scope.isReadonly = true;
 			// logging selected value to console only
@@ -156,7 +156,7 @@ console.log('Rating selected: ' + rating);
 
  				//Step 2: This is how you record the date
                 $scope.myComment.date = new Date().toISOString();
-				$scope.myComment.rating = $scope.rating1;
+				//$scope.myComment.rating = $scope.rating1;
 console.log($scope.mycomment);
 
                 // Step 3: Push your comment into the dish's comment array
@@ -167,7 +167,7 @@ console.log($scope.mycomment);
 
                 //Step 4: reset your form to pristine
 				$scope.commentForm.$setPristine();
-				$scope.rating1 = 5;
+				// $scope.rating1 = 5;
 
 		$scope.mycomment = {rating:5, comment:"", author:"", date:""};
 	}
@@ -195,8 +195,9 @@ console.log($scope.mycomment);
 
 }])
 
-.controller('AboutController', ['$scope', 'corporateFactory', function($scope, corporateFactory) {
+.controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', function($scope, corporateFactory, baseURL) {
 
+	$scope.baseURL = baseURL;
 	$scope.leaders = corporateFactory.query();
 	console.log($scope.leaders);
 
@@ -208,50 +209,49 @@ console.log($scope.mycomment);
 
 // Star rating directive - do not delete.
 // Variables in DishDetailController,
-		angular.module('conFusion').directive('starRating', function () {
-			return {
-				  restrict: 'EA',
-				  template:
-					'<ul class="star-rating" ng-class="{readonly: readonly}">' +
-					'  <li ng-repeat="star in stars" class="star" ng-class="{filled: star.filled}" ng-click="toggle($index)">' +
-					'    <i class="icon ion-star"></i>' + // or &#9733
-					'  </li>' +
-					'</ul>',
-				  scope: {
-					ratingValue: '=ngModel',
-					max: '=?', // optional (default is 5)
-					onRatingSelect: '&?',
-					readonly: '=?'
-				  },
+angular.module('conFusion').directive('starRating', function () {
+	return {
+		restrict: 'EA',
+		template: '<ul class="star-rating" ng-class="{readonly: readonly}">' +
+			'  <li ng-repeat="star in stars" class="star" ng-class="{filled: star.filled}" ng-click="toggle($index)">' +
+			'    <i class="icon ion-star"></i>' + // or &#9733
+			'  </li>' +
+			'</ul>',
+		scope: {
+			ratingValue: '=ngModel',
+			max: '=?', // optional (default is 5)
+			onRatingSelect: '&?',
+			readonly: '=?'
+		},
 
-				  link: function(scope, element, attributes) {
-					if (scope.max === undefined) {
-					  scope.max = 5;
-					}
+		link: function (scope, element, attributes) {
+			if (scope.max === undefined) {
+				scope.max = 5;
+			}
 
-					function updateStars() {
-					  scope.stars = [];
-					  for (var i = 0; i < scope.max; i++) {
-						scope.stars.push({
-						  filled: i < scope.ratingValue
-						});
-					  }
-					}
-
-					scope.toggle = function(index) {
-					  if (scope.readonly === undefined || scope.readonly === false){
-						scope.ratingValue = index + 1;
-						scope.onRatingSelect({
-						  rating: index + 1
-						});
-					  }
-					};
-
-					scope.$watch('ratingValue', function(oldValue, newValue) {
-					  if (newValue) {
-						updateStars();
-					  }
+			function updateStars() {
+				scope.stars = [];
+				for (var i = 0; i < scope.max; i++) {
+					scope.stars.push({
+						filled: i < scope.ratingValue
 					});
-				  }
-				};
+				}
+			}
+
+			scope.toggle = function (index) {
+				if (scope.readonly === undefined || scope.readonly === false) {
+					scope.ratingValue = index + 1;
+					scope.onRatingSelect({
+						rating: index + 1
+					});
+				}
+			};
+
+			scope.$watch('ratingValue', function (oldValue, newValue) {
+				if (newValue) {
+					updateStars();
+				}
 			});
+		}
+	};
+});
