@@ -1,3 +1,5 @@
+
+
 <ion-view view-title="About Us">
 	<ion-content>
 		<div class="card">
@@ -15,7 +17,7 @@
 			</div>
 			<ion-list>
 				<ion-item class="item item-text-wrap item-avatar" ng-repeat="leader in leaders">
-					<img class="" ng-src="{{baseURL+leader.image}}">
+					<img class="" ng-src="{{baseURL+leader.image}}" alt="{{leader.name}}">
 					<h3>{{ leader.name }}</h3>
 					<h4>{{ leader.designation }}</h4>
 					<p>{{ leader.description }}</p>
