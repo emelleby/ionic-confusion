@@ -39,9 +39,42 @@ angular.module('conFusion.controllers', [])
 			$scope.closeLogin();
 		}, 1000);
 	};
+
+	// Object to hold the reservation data
+	$scope.reservation = {};
+
+	// Create the reserve modal that we will use later
+	$ionicModal.fromTemplateUrl('templates/reserve.html', {
+		scope: $scope
+	}).then(function (modal) {
+		$scope.reserveform = modal;
+	});
+
+	// Triggered in the reserve modal to close it
+	$scope.closeReserve = function () {
+		$scope.reserveform.hide();
+	};
+
+	// Open the reserve modal
+	$scope.reserve = function () {
+		$scope.reserveform.show();
+	};
+
+	// Perform the reserve action when the user submits the reserve form
+	$scope.doReserve = function () {
+		console.log('Doing reservation', $scope.reservation);
+
+		// Simulate a reservation delay. Remove this and replace with your reservation
+		// code if using a server system
+		$timeout(function () {
+			$scope.closeReserve();
+		}, 1000);
+	};
+
 })
 
-.controller('MenuController', ['$scope', 'menuFactory', 'baseURL', function($scope, menuFactory, baseURL) {
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate',
+							   function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
 
 	$scope.baseURL = baseURL;
 	$scope.tab = 1;
@@ -72,6 +105,12 @@ angular.module('conFusion.controllers', [])
 		else if (setTab === 4) {
 			$scope.filtText = "dessert";
 		}
+
+		// Filter for favorites
+		else if (setTab === 5) {
+			$scope.filtText = "";
+
+		}
 		else {
 			$scope.filtText = "";
 		}
@@ -84,6 +123,69 @@ angular.module('conFusion.controllers', [])
 	$scope.toggleDetails = function() {
 		$scope.showDetails = !$scope.showDetails;
 	};
+
+$scope.favorites = favoriteFactory.getFavorites();
+
+	// Add the dish to favorites via favoriteFactory
+    $scope.addFavorite = function (index) {
+        console.log("index is " + index);
+
+        favoriteFactory.addToFavorites(index);
+        $ionicListDelegate.closeOptionButtons();
+console.log($scope.favorites);
+    }
+
+	$scope.favs = favoriteFactory.getFavs();
+ $scope.isFavorites = function(id) {
+       return $scope.favorites.indexOf({'id': id}) != -1 || false;
+   }
+	// Returns whether item exists in the list 'favs'
+		  $scope.exists = function (item, list) {
+		//	favoriteFactory.getFavorites();
+console.log($scope.favs);
+			return list.indexOf(item) > -1;
+		  };
+
+		$scope.objExists = function (arraytosearch, key, valuetosearch) {
+			for (var i = 0; i < 0; i++) { // use forEach arraytosearch.length
+
+				if (arraytosearch[i][key] == valuetosearch) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+}])
+
+.controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate',
+									function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
+
+    $scope.baseURL = baseURL;
+    $scope.shouldShowDelete = false;
+
+    $scope.favorites = favoriteFactory.getFavorites();
+
+    $scope.dishes = menuFactory.getDishes().query(
+        function (response) {
+            $scope.dishes = response;
+        },
+        function (response) {
+            $scope.message = "Error: " + response.status + " " + response.statusText;
+        });
+    console.log($scope.dishes, $scope.favorites);
+
+    $scope.toggleDelete = function () {
+        $scope.shouldShowDelete = !$scope.shouldShowDelete;
+        console.log($scope.shouldShowDelete);
+    }
+
+    $scope.deleteFavorite = function (index) {
+
+        favoriteFactory.deleteFromFavorites(index);
+        $scope.shouldShowDelete = false;
+
+    }
 }])
 
 .controller('ContactController', ['$scope', function($scope) {
@@ -203,6 +305,20 @@ console.log($scope.mycomment);
 
 }])
 
+// Custom filter for filtering out favorites
+.filter('favoriteFilter', function () {
+    return function (dishes, favorites) {
+        var out = [];
+        for (var i = 0; i < favorites.length; i++) {
+            for (var j = 0; j < dishes.length; j++) {
+                if (dishes[j].id === favorites[i].id)
+                    out.push(dishes[j]);
+            }
+        }
+        return out;
+
+    }
+});
 
 // Final closing semicolon after last controller
 ;
@@ -255,3 +371,6 @@ angular.module('conFusion').directive('starRating', function () {
 		}
 	};
 });
+
+
+

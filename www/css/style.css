@@ -4,8 +4,11 @@
     right: 15px;
 }
 
-/* Code for the stars rating
- *
+/*To hide the scrollbar on android */
+ion-content { overflow-y: hidden !important;}
+
+/*
+ * Code for the stars rating
 */
 
 .star-rating {
@@ -23,6 +26,9 @@
   cursor: pointer;
 }
 .star-rating .star.filled {
+  color: #fd0;
+}
+.yellowstar {
   color: #fd0;
 }
 .star-rating.readonly .star.filled {
