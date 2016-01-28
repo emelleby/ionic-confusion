@@ -9,8 +9,8 @@
 				<a ng-click="select(3)">Mains</a></li>
 			<li ng-class="{active:isSelected(4)}" class="tab-item">
 				<a  ng-click="select(4)">Desserts</a></li>
-			<li ng-class="{active:isSelected(5)}" class="tab-item">
-				<a  ng-click="select(5)">Favorites</a></li>
+			<!--<li ng-class="{active:isSelected(5)}" class="tab-item">
+				<a  ng-click="select(5)">Favorites</a></li>-->
 		</ul>
 	</div>
 	<ion-content>
@@ -18,7 +18,7 @@
 			<ion-item ng-repeat="dish in dishes | filter:{category: filtText}" href="#/app/menu/{{dish.id}}" class="item-thumbnail-left">
 				<img ng-src="{{baseURL+dish.image}}">
 				<h2>{{dish.name}}
-					<span ng-if="objExists(favorites, 'id', dish.id)"><i class="icon ion-star yellowstar"></i></span>
+					<!--<span ng-if="objExists(favorites, 'id', dish.id)"><i class="icon ion-star yellowstar"></i></span>-->
 					<span style="font-size:75%">{{dish.price | currency}}</span>
 					<span class="badge badge-assertive">{{dish.label}}</span></h2>
 				<p>{{dish.description}}</p>

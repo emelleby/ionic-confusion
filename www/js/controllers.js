@@ -124,7 +124,7 @@ angular.module('conFusion.controllers', [])
 		$scope.showDetails = !$scope.showDetails;
 	};
 
-$scope.favorites = favoriteFactory.getFavorites();
+// $scope.favorites = favoriteFactory.getFavorites();
 
 	// Add the dish to favorites via favoriteFactory
     $scope.addFavorite = function (index) {
@@ -132,10 +132,9 @@ $scope.favorites = favoriteFactory.getFavorites();
 
         favoriteFactory.addToFavorites(index);
         $ionicListDelegate.closeOptionButtons();
-console.log($scope.favorites);
     }
 
-	$scope.favs = favoriteFactory.getFavs();
+	/*$scope.favs = favoriteFactory.getFavs();
  $scope.isFavorites = function(id) {
        return $scope.favorites.indexOf({'id': id}) != -1 || false;
    }
@@ -147,14 +146,14 @@ console.log($scope.favs);
 		  };
 
 		$scope.objExists = function (arraytosearch, key, valuetosearch) {
-			for (var i = 0; i < 0; i++) { // use forEach arraytosearch.length
+			for (var i = 0; i < arraytosearch.length; i++) { // use forEach arraytosearch.length
 
 				if (arraytosearch[i][key] == valuetosearch) {
 					return true;
 				}
 			}
 			return false;
-		}
+		}*/
 
 }])
 
