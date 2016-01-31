@@ -246,7 +246,8 @@ console.log($scope.dishes, $scope.favorites);
 	};
 }])
 
-.controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL', function($scope, $stateParams, menuFactory, baseURL) {
+.controller('DishDetailController', ['$scope', '$stateParams', '$ionicPopover', '$ionicModal','menuFactory', 'favoriteFactory', 'baseURL',
+									 function($scope, $stateParams, $ionicPopover, $ionicModal, menuFactory, favoriteFactory, baseURL) {
 
 	$scope.baseURL = baseURL;
 	$scope.dish = {};
@@ -264,8 +265,72 @@ console.log($scope.dishes, $scope.favorites);
 					}
 	);
 
-	// Variables for star rating directive
-			//$scope.rating1 = 5;
+	// .fromTemplateUrl() method
+	$ionicPopover.fromTemplateUrl('./templates/dish-detail-popover.html', {
+		scope: $scope
+	}).then(function(popover) {
+		$scope.popover = popover;
+	});
+	$scope.openPopover = function($event) {
+		$scope.popover.show($event);
+	  };
+	  $scope.closePopover = function() {
+		$scope.popover.hide();
+	  };
+
+	// Add the dish to favorites via favoriteFactory
+    $scope.addFavorite = function (index) {
+        console.log("Added this to favorites: " + index);
+
+        favoriteFactory.addToFavorites(index);
+       // Hide the popover?
+		$scope.closePopover();
+    }
+
+	// Form data for the comment modal
+	$scope.myComment = {rating:5, comment:"", author:"", date:""};
+
+	// Create the comment modal
+	$ionicModal.fromTemplateUrl('templates/dish-comment.html', {
+		scope: $scope
+	}).then(function (modal) {
+		$scope.modal = modal;
+	});
+
+	// Triggered in the comment modal to close it and when submitting
+	$scope.closeComment = function () {
+		$scope.modal.hide();
+	};
+
+	// Open the comment modal
+	$scope.addComment = function () {
+		$scope.modal.show();
+		// Closing the Popover as modal is shown
+		$scope.closePopover();
+	};
+
+	// Perform the commenting
+	$scope.submitComment = function () {
+
+ 				//Step 2: This is how you record the date
+                $scope.myComment.date = new Date().toISOString();
+
+console.log($scope.myComment);
+
+                // Step 3: Push your comment into the dish's comment array
+                $scope.dish.comments.push($scope.myComment);
+
+				// update/PUT comment to server
+				menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
+
+                //Step 4: reset your form to pristine
+				//$scope.commentForm.$setPristine();
+
+		$scope.myComment = {rating:5, comment:"", author:"", date:""};
+
+		$scope.closeComment();
+	};
+
 			// Readonly set to true and can not be changed use it for comment edit
 			$scope.isReadonly = true;
 			// logging selected value to console only
@@ -276,16 +341,16 @@ console.log('Rating selected: ' + rating);
 
 }])
 
-.controller('DishCommentController', ['$scope', 'menuFactory', function($scope,menuFactory) {
+.controller('DishCommentController', ['$scope', 'menuFactory', function($scope, menuFactory) {
 
-	$scope.mycomment = {rating:5, comment:"", author:"", date:""};
+	$scope.myComment = {rating:5, comment:"", author:"", date:""};
 
 	$scope.submitComment = function () {
 
  				//Step 2: This is how you record the date
                 $scope.myComment.date = new Date().toISOString();
-				//$scope.myComment.rating = $scope.rating1;
-console.log($scope.mycomment);
+
+console.log($scope.myComment);
 
                 // Step 3: Push your comment into the dish's comment array
                 $scope.dish.comments.push($scope.myComment);
@@ -295,9 +360,9 @@ console.log($scope.mycomment);
 
                 //Step 4: reset your form to pristine
 				$scope.commentForm.$setPristine();
-				// $scope.rating1 = 5;
 
-		$scope.mycomment = {rating:5, comment:"", author:"", date:""};
+
+		$scope.myComment = {rating:5, comment:"", author:"", date:""};
 	}
 }])
 

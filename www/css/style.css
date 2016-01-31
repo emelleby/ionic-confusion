@@ -5,7 +5,7 @@
 }
 
 /*To hide the scrollbar on android */
-ion-content { overflow-y: hidden !important;}
+/*ion-content { overflow-y: hidden !important;}*/
 
 /*
  * Code for the stars rating
@@ -33,4 +33,20 @@ ion-content { overflow-y: hidden !important;}
 }
 .star-rating.readonly .star.filled {
   color: rgba(240, 183, 27, 0.97);
+}
+
+/*Popover css*/
+.popover {
+  height: auto !important;
+}
+.popover ion-header-bar {
+  position: relative;
+}
+.popover ion-content {
+  top: 0;
+  position: relative;
+}
+.popover-inner-content {
+  width: 100%;
+  padding: 5px 20px;
 }
