@@ -1,6 +1,6 @@
 angular.module('conFusion.controllers', [])
 
-.controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
+.controller('AppCtrl', function ($scope, $ionicModal, $timeout, $localStorage) {
 
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
@@ -10,7 +10,7 @@ angular.module('conFusion.controllers', [])
 	//});
 
 	// Form data for the login modal
-	$scope.loginData = {};
+	$scope.loginData = $localStorage.getObject('userinfo','{}');
 
 	// Create the login modal that we will use later
 	$ionicModal.fromTemplateUrl('templates/login.html', {
@@ -31,7 +31,8 @@ angular.module('conFusion.controllers', [])
 
 	// Perform the login action when the user submits the login form
 	$scope.doLogin = function () {
-		console.log('Doing login', $scope.loginData);
+        console.log('Doing login', $scope.loginData);
+        $localStorage.storeObject('userinfo',$scope.loginData);
 
 		// Simulate a login delay. Remove this and replace with your login
 		// code if using a login system
@@ -157,7 +158,7 @@ console.log($scope.favs);
 
 }])
 
-.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', '$timeout', function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
+.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup) {
 
     $scope.baseURL = baseURL;
     $scope.shouldShowDelete = false;
@@ -165,10 +166,6 @@ console.log($scope.favs);
     $scope.favorites = favorites;
 
     $scope.dishes = dishes;
-
-	/*$ionicLoading.show({
-		template: '<ion-spinner></ion-spinner> Loading...'
-	});*/
 
 console.log($scope.dishes, $scope.favorites);
 
@@ -393,6 +390,7 @@ console.log($scope.myComment);
 .filter('favoriteFilter', function () {
     return function (dishes, favorites) {
         var out = [];
+
         for (var i = 0; i < favorites.length; i++) {
             for (var j = 0; j < dishes.length; j++) {
                 if (dishes[j].id === favorites[i].id)
@@ -400,11 +398,12 @@ console.log($scope.myComment);
             }
         }
         return out;
+	}
 
-    }
 });
 
-// Final closing semicolon after last controller
+
+// Final closing semicolon after last controller & filter
 ;
 
 // Star rating directive - do not delete.

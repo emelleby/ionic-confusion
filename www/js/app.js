@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.services'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, $ionicLoading, $timeout) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -20,6 +20,34 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
       StatusBar.styleDefault();
     }
   });
+
+	// Setting up the loading message here
+	$rootScope.$on('loading:show', function () {
+		$ionicLoading.show({
+			template: '<ion-spinner></ion-spinner> Loading ...'
+		})
+    });
+
+    $rootScope.$on('loading:hide', function () {
+        $ionicLoading.hide();
+    });
+
+	// Broadcasting the loading message from rootScope on state change to all children down the chain. Emit if going up from $scope or other
+    $rootScope.$on('$stateChangeStart', function () {
+        console.log('Loading ...');
+        $rootScope.$broadcast('loading:show');
+    });
+
+    $rootScope.$on('$stateChangeSuccess', function () {
+
+		// Timeout for fun.
+		$timeout(function () {
+			console.log('done');
+			$rootScope.$broadcast('loading:hide');
+		}, 400);
+		// $rootScope.$broadcast('loading:hide');
+
+    });
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
