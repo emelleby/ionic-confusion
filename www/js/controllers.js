@@ -32,7 +32,7 @@ angular.module('conFusion.controllers', [])
 	// Perform the login action when the user submits the login form
 	$scope.doLogin = function () {
         console.log('Doing login', $scope.loginData);
-        $localStorage.storeObject('userinfo',$scope.loginData);
+        $localStorage.storeObject('userinfo', $scope.loginData);
 
 		// Simulate a login delay. Remove this and replace with your login
 		// code if using a login system
@@ -74,8 +74,8 @@ angular.module('conFusion.controllers', [])
 
 })
 
-.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate',
-							   function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', 'dishes',
+							   function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate, dishes) {
 
 	$scope.baseURL = baseURL;
 	$scope.tab = 1;
@@ -84,14 +84,17 @@ angular.module('conFusion.controllers', [])
 	$scope.showMenu = false;
 	$scope.message = "Loading ...";
 
-	menuFactory.query(
+    $scope.dishes = dishes;
+
+
+	/*menuFactory.query(
 		function(response) {
 			$scope.dishes = response;
 			$scope.showMenu = true;
 		},
 		function(response) {
 			$scope.message = "Error: "+response.status + " " + response.statusText;
-		});
+		});*/
 
 
 	$scope.select = function(setTab) {
@@ -158,7 +161,8 @@ console.log($scope.favs);
 
 }])
 
-.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup) {
+.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup',
+									function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup) {
 
     $scope.baseURL = baseURL;
     $scope.shouldShowDelete = false;
@@ -228,7 +232,8 @@ console.log($scope.dishes, $scope.favorites);
 	};
 }])
 
-.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicPopover', '$ionicModal', function ($scope, $stateParams, dish, menuFactory, favoriteFactory, baseURL, $ionicPopover, $ionicModal) {
+.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicPopover', '$ionicModal',
+									 function ($scope, $stateParams, dish, menuFactory, favoriteFactory, baseURL, $ionicPopover, $ionicModal) {
 
     $scope.baseURL = baseURL;
 
@@ -350,14 +355,17 @@ console.log($scope.myComment);
 }])
 
 
-.controller('IndexController', ['$scope', 'menuFactory', 'promotionFactory', 'corporateFactory', 'baseURL',
-								function ($scope, menuFactory, promotionFactory, corporateFactory, baseURL) {
+.controller('IndexController', ['$scope', 'menuFactory', 'promotionFactory', 'corporateFactory', 'baseURL', 'promotion', 'leader', 'dish',
+								function ($scope, menuFactory, promotionFactory, corporateFactory, baseURL, promotion, leader, dish) {
 
     $scope.baseURL = baseURL;
-    $scope.leader = corporateFactory.get({ id: 3 });
+    $scope.leader = leader;
+    $scope.dish = dish;
+    $scope.promotion = promotion;
 
-    $scope.showDish = false;
+   /* $scope.showDish = false;
     $scope.message = "Loading ...";
+
 
     $scope.dish = menuFactory.get({
             id: 0
@@ -374,14 +382,14 @@ console.log($scope.myComment);
 
     $scope.promotion = promotionFactory.get({
         id: 0
-    });
+    });*/
 
 }])
 
-.controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', function($scope, corporateFactory, baseURL) {
+.controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', 'leaders', function($scope, corporateFactory, baseURL, leaders) {
 
 	$scope.baseURL = baseURL;
-	$scope.leaders = corporateFactory.query();
+	$scope.leaders = leaders;
 	console.log($scope.leaders);
 
 }])

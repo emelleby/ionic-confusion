@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('conFusion.services', ['ngResource'])
-	.constant("baseURL","http://localhost:3000/")
+	.constant("baseURL","http://127.0.0.1:3000/")
 
 	.factory('menuFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
@@ -14,27 +14,29 @@ angular.module('conFusion.services', ['ngResource'])
 	}])
 
 	.factory('promotionFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
-				return $resource(baseURL + "promotions/:id");
+
+		return $resource(baseURL + "promotions/:id");
 
 	}])
 
-	.factory('corporateFactory', ['$resource', 'baseURL', function($resource,baseURL) {
+	.factory('corporateFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
-
-		return $resource(baseURL+"leadership/:id");
+		return $resource(baseURL + "leadership/:id");
 
 	}])
 
 	.factory('feedbackFactory', ['$resource', 'baseURL', function($resource,baseURL) {
 
-
 		return $resource(baseURL+"feedback/:id");
 
 	}])
 
-	.factory('favoriteFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+	.factory('favoriteFactory', ['$resource', 'baseURL', '$localStorage', function ($resource, baseURL, $localStorage) {
 		var favFac = {};
-		var favorites = [];
+
+		// Get favorites from $localStorage or empty Javascript array
+		var favorites = $localStorage.getObject('favorites', '[]');
+
 		// var favs = [];
 
 		favFac.addToFavorites = function (index) {
@@ -43,6 +45,10 @@ angular.module('conFusion.services', ['ngResource'])
 					return;
 			}
 			favorites.push({id: index});
+
+			// Save favorites to $localStorage - name is arbitrary
+			$localStorage.storeObject('favorites', favorites);
+
 			// Extra array
 			// favs.push(index);
 
@@ -54,6 +60,9 @@ console.log(favFac);
 			for (var i = 0; i < favorites.length; i++) {
 				if (favorites[i].id == index) {
 					favorites.splice(i, 1);
+
+					// Update favorites in $localStorage
+					$localStorage.storeObject('favorites', favorites);
 				}
 
 				// Adding the index to favs
@@ -63,7 +72,7 @@ console.log(favFac);
 			}
 		}
 
-		favFac.getFavorites = function () {
+		favFac.getFavorites = function ($localStorage) {
 			return favorites;
 		};
 

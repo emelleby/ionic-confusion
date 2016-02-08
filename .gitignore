@@ -3,7 +3,8 @@
 
 #hooks/
 #node_modules/
-#platforms/
-#plugins/
+platforms/
+plugins/
+resources/
 #www/lib/
 #www/img/
