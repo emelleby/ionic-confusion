@@ -123,7 +123,7 @@ angular.module('conFusion.controllers', [])
 				$scope.registerform.show();
 
 			}
-			 // cordovaCamera
+			 // cordovaCamera working fine on test.
 			/* $scope.getPicture = function () {
                   var options = {
                     quality: 75,
@@ -391,7 +391,8 @@ angular.module('conFusion.controllers', [])
 	}])
 
 	.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicPopover', '$ionicModal',
-										 function ($scope, $stateParams, dish, menuFactory, favoriteFactory, baseURL, $ionicPopover, $ionicModal) {
+										 '$ionicPlatform', '$cordovaLocalNotification', '$cordovaToast',
+										 function ($scope, $stateParams, dish, menuFactory, favoriteFactory, baseURL, $ionicPopover, $ionicModal, $ionicPlatform, $cordovaLocalNotification, $cordovaToast) {
 
 		$scope.baseURL = baseURL;
 
@@ -431,6 +432,30 @@ angular.module('conFusion.controllers', [])
 			favoriteFactory.addToFavorites(index);
 		   // Hide the popover?
 			$scope.closePopover();
+
+			// Notification and Toast
+			$ionicPlatform.ready(function () {
+                $cordovaLocalNotification.schedule({
+                    id: 1,
+                    title: "Added Favorite",
+                    text: $scope.dish.name
+                }).then(function () {
+                    console.log('Added Favorite ' + $scope.dish.name);
+                },
+                function () {
+                    console.log('Failed to add Notification ');
+                });
+
+                $cordovaToast
+                  .show('Added Favorite '+$scope.dish.name, 'long', 'bottom')
+                  .then(function (success) {
+                      // success
+                  }, function (error) {
+                      // error
+					    console.log('Failed to add Toast ');
+                  });
+        	});
+
 		}
 
 		// Form data for the comment modal
