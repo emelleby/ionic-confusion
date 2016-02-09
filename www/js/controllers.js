@@ -87,18 +87,38 @@ angular.module('conFusion.controllers', [])
 				popoverOptions: CameraPopoverOptions,
 				saveToPhotoAlbum: false,
 
-				maximumImagesCount: 1,
+				// For use with ImagePicker
+				/*maximumImagesCount: 1,
    				width: 60,
-				height: 0
-
-				/*
+				height: 0*/
+				};
+			var options2 = {
 				// For use with $cordovaCamera
 				destinationType: Camera.DestinationType.FILE_URI,
-      			sourceType: Camera.PictureSourceType.CAMERA,*/
-			};
+      			sourceType: Camera.PictureSourceType.CAMERA,
+				width: 100
+				};
 
 			// Picture from camera
 			 $scope.takePicture = function() {
+
+				 var options = {
+				quality: 80,
+				destinationType: Camera.DestinationType.DATA_URL,
+				sourceType: Camera.PictureSourceType.CAMERA,
+				allowEdit: true,
+				encodingType: Camera.EncodingType.JPEG,
+				targetWidth: 100,
+				targetHeight: 100,
+				popoverOptions: CameraPopoverOptions,
+				saveToPhotoAlbum: false,
+
+				// For use with ImagePicker
+				/*maximumImagesCount: 1,
+   				width: 60,
+				height: 0*/
+				};
+
 				$cordovaCamera.getPicture(options).then(function(imageData) {
 					$scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
 				}, function(err) {
@@ -107,9 +127,31 @@ angular.module('conFusion.controllers', [])
 
 				$scope.registerform.show();
 
-			};
+			}
 
-			// Picture from gallery
+			 $scope.getPicture = function () {
+                  var options = {
+                    quality: 75,
+                    destinationType: Camera.DestinationType.DATA_URL,
+                    sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+                    allowEdit: true,
+                    encodingType: Camera.EncodingType.JPEG,
+                    targetWidth: 100,
+                    targetHeight: 100,
+                    popoverOptions: CameraPopoverOptions,
+                    saveToPhotoAlbum: false
+                };
+
+                    $cordovaCamera.getPicture(options).then(function (imageData) {
+                        $scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
+                    }, function (err) {
+                        // An error occured. Show a message to the user
+						console.log(err);
+                    });
+
+
+
+			/*// Picture from gallery
 			$scope.getPicture = function() {
 				$cordovaImagePicker.getPictures(options).then(function(results) {
 
@@ -126,11 +168,11 @@ angular.module('conFusion.controllers', [])
 					console.log('Image URI: ' + results);
 				}, function(err) {
 					console.log(err);
-				});
+				});*/
 
 				$scope.registerform.show();
 
-			};
+			}
 		});
 
 		// Object to hold the reservation data
