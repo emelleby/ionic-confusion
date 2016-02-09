@@ -21,7 +21,12 @@
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard",
     "cordova-plugin-app-event",
-	"com-badrit-base64"
+    "com-badrit-base64",
+    "de.appplant.cordova.plugin.local-notification",
+    {
+      "locator": "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
+      "id": "cordova-plugin-x-toast"
+    }
   ],
   "cordovaPlatforms": [
     "android"

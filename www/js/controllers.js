@@ -74,7 +74,7 @@ angular.module('conFusion.controllers', [])
 			}, 1000);
 		};
 
-	    $ionicPlatform.ready(function() {
+	    /*$ionicPlatform.ready(function() {
 			var options = {
 				quality: 50,
 				destinationType: Camera.DestinationType.DATA_URL,
@@ -96,7 +96,7 @@ angular.module('conFusion.controllers', [])
 				$scope.registerform.show();
 
 			};
-		});
+		});*/
 
 		// Object to hold the reservation data
 		$scope.reservation = {};
