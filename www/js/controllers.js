@@ -320,7 +320,7 @@ angular.module('conFusion.controllers', [])
 	}])
 
 	.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup',
-										function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup) {
+										function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $cordovaVibration) {
 
 		$scope.baseURL = baseURL;
 		$scope.shouldShowDelete = false;
@@ -347,6 +347,7 @@ angular.module('conFusion.controllers', [])
 				if (res) {
 					console.log('Ok to delete');
 					favoriteFactory.deleteFromFavorites(index);
+					navigator.vibrate(2000);
 				} else {
 					console.log('Canceled delete');
 				}
