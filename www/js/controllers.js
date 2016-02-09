@@ -112,24 +112,19 @@ angular.module('conFusion.controllers', [])
 				targetHeight: 100,
 				popoverOptions: CameraPopoverOptions,
 				saveToPhotoAlbum: false,
-
-				// For use with ImagePicker
-				/*maximumImagesCount: 1,
-   				width: 60,
-				height: 0*/
 				};
 
 				$cordovaCamera.getPicture(options).then(function(imageData) {
 					$scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
-				}, function(err) {
-					console.log(err);
+					}, function(err) {
+						console.log(err);
 				});
 
 				$scope.registerform.show();
 
 			}
-
-			 $scope.getPicture = function () {
+			 // cordovaCamera
+			/* $scope.getPicture = function () {
                   var options = {
                     quality: 75,
                     destinationType: Camera.DestinationType.DATA_URL,
@@ -144,15 +139,23 @@ angular.module('conFusion.controllers', [])
 
                     $cordovaCamera.getPicture(options).then(function (imageData) {
                         $scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
-                    }, function (err) {
-                        // An error occured. Show a message to the user
-						console.log(err);
-                    });
+						}, function (err) {
+							// An error occured. Show a message to the user
+							console.log(err);
+                    });*/
 
 
 
-			/*// Picture from gallery
+			// Picture from gallery with ImagePicker
 			$scope.getPicture = function() {
+
+				// For use with ImagePicker
+				var options = {
+					maximumImagesCount: 1,
+					width: 100,
+					height: 100
+				};
+
 				$cordovaImagePicker.getPictures(options).then(function(results) {
 
 					// Loop through acquired images
@@ -168,7 +171,7 @@ angular.module('conFusion.controllers', [])
 					console.log('Image URI: ' + results);
 				}, function(err) {
 					console.log(err);
-				});*/
+				});
 
 				$scope.registerform.show();
 
