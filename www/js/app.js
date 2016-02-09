@@ -51,7 +51,6 @@ angular.module('conFusion', ['ionic', 'ngCordova', 'conFusion.controllers','conF
 				console.log('done');
 				$rootScope.$broadcast('loading:hide');
 			}, 400);
-			// $rootScope.$broadcast('loading:hide');
 
 		});
 	})

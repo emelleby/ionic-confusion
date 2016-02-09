@@ -2,7 +2,7 @@
 
 angular.module('conFusion.controllers', [])
 
-	.controller('AppCtrl', function ($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera) {
+	.controller('AppCtrl', function ($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera, $cordovaImagePicker) {
 
 		// With the new view caching in Ionic, Controllers are only called
 		// when they are recreated or on app start, instead of every page change.
@@ -65,7 +65,7 @@ angular.module('conFusion.controllers', [])
 
 		// Perform the registration action when the user submits the registration form
 		$scope.doRegister = function () {
-			console.log('Doing reservation', $scope.reservation);
+			console.log('Doing registration', $scope.registration);
 
 			// Simulate a registration delay. Remove this and replace with your registration
 			// code if using a registration system
@@ -74,9 +74,10 @@ angular.module('conFusion.controllers', [])
 			}, 1000);
 		};
 
+
 	    $ionicPlatform.ready(function() {
 			var options = {
-				quality: 50,
+				quality: 80,
 				destinationType: Camera.DestinationType.DATA_URL,
 				sourceType: Camera.PictureSourceType.CAMERA,
 				allowEdit: true,
@@ -84,11 +85,45 @@ angular.module('conFusion.controllers', [])
 				targetWidth: 100,
 				targetHeight: 100,
 				popoverOptions: CameraPopoverOptions,
-				saveToPhotoAlbum: false
+				saveToPhotoAlbum: false,
+
+				maximumImagesCount: 1,
+   				width: 60,
+				height: 0
+
+				/*
+				// For use with $cordovaCamera
+				destinationType: Camera.DestinationType.FILE_URI,
+      			sourceType: Camera.PictureSourceType.CAMERA,*/
 			};
+
+			// Picture from camera
 			 $scope.takePicture = function() {
 				$cordovaCamera.getPicture(options).then(function(imageData) {
 					$scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
+				}, function(err) {
+					console.log(err);
+				});
+
+				$scope.registerform.show();
+
+			};
+
+			// Picture from gallery
+			$scope.getPicture = function() {
+				$cordovaImagePicker.getPictures(options).then(function(results) {
+
+					// Loop through acquired images
+					for (var i = 0; i < results.length; i++) {
+						$scope.registration.imgSrc = results[i];   // We loading only one image so we can use it like this
+
+						// cordova plugin add https://github.com/hazemhagrass/phonegap-base64
+						window.plugins.Base64.encodeFile($scope.registration.imgSrc, function(base64){  // Encode URI to Base64 needed for contacts plugin
+							$scope.registration.imgSrc = base64;
+						});
+					}
+
+					console.log('Image URI: ' + results);
 				}, function(err) {
 					console.log(err);
 				});

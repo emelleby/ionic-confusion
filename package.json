@@ -30,7 +30,11 @@
       "id": "cordova-plugin-x-toast"
     },
     "cordova-plugin-camera",
-    "org.apache.cordova.camera"
+    "org.apache.cordova.camera",
+    {
+      "locator": "https://github.com/b-alidra/-cordova-imagePickerEx.git",
+      "id": "com.synconset.ImagePickerExt"
+    }
   ],
   "cordovaPlatforms": [
     "android"
