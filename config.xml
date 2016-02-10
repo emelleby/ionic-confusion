@@ -9,6 +9,24 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
+	<!-- Access to all the subdomains on google.com -->
+    <access origin="http://*.google.com" />
+	<!-- Allow geo: links to open maps -->
+    <allow-intent href="geo:*" />
+	<!-- Allow tel: links to open the dialer -->
+    <allow-intent href="tel:*" />
+	<!-- Allow mailto: links to open the something -->
+    <allow-intent href="mailto:*" />
+
+<!-- Allow all unrecognized URLs to open installed apps
+ *NOT RECOMMENDED* -->
+    <allow-intent href="*" />
+
+<!-- A wildcard can be used to whitelist the entire network,
+ over HTTP and HTTPS.
+ *NOT RECOMMENDED* -->
+    <allow-navigation href="*" />
+
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />

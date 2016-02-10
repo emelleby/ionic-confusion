@@ -8,3 +8,4 @@ plugins/
 resources/
 #www/lib/
 #www/img/
+/www/js/map.js

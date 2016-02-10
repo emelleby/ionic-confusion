@@ -359,18 +359,54 @@ angular.module('conFusion.controllers', [])
 
 	}])
 
-	.controller('ContactController', ['$scope', function($scope) {
+	.controller('ContactController', ['$scope', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', function($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform) {
 
-		$scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
+/*		$scope.feedback = {mychannel:"", firstName:"", lastName:"", agree:false, email:"" };
 
 		var channels = [{value:"tel", label:"Tel."}, {value:"Email",label:"Email"}];
 
 		$scope.channels = channels;
-		$scope.invalidChannelSelection = false;
+		$scope.invalidChannelSelection = false;*/
+
+		// Geolocation for map.
+		$ionicPlatform.ready(function() {
+
+        $ionicLoading.show({
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+        });
+
+        var posOptions = {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 0
+        };
+
+        $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+            var lat  = position.coords.latitude;
+            var long = position.coords.longitude;
+
+            var myLatlng = new google.maps.LatLng(lat, long);
+
+            var mapOptions = {
+                center: myLatlng,
+                zoom: 16,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+console.log(myLatlng);
+            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+            $scope.map = map;
+            $ionicLoading.hide();
+console.log($scope.map);
+			}, function(err) {
+				$ionicLoading.hide();
+				console.log(err);
+			});
+		});
 
 	}])
 
-	.controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope,feedbackFactory) {
+	.controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope, feedbackFactory) {
 
 		$scope.sendFeedback = function() {
 
@@ -577,6 +613,150 @@ angular.module('conFusion.controllers', [])
 		console.log($scope.leaders);
 
 	}])
+
+	.controller('MapController', function($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform) {
+
+		$ionicPlatform.ready(function() {
+
+//			function initialize() {
+
+				var site = new google.maps.LatLng(22.40634956, 114.7095184);
+				var goal = new google.maps.LatLng(22.30624956, 114.17095184);
+
+				var mapOptions = {
+					streetViewControl: true,
+					center: site,
+					zoom: 18,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+	console.log(mapOptions);
+
+				$ionicLoading.show({
+					template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+					});
+
+					var posOptions = {
+						enableHighAccuracy: true,
+						timeout: 20000,
+						maximumAge: 0
+					};
+
+				// Get the users position
+				$cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+					var lat = position.coords.latitude;
+					var long = position.coords.longitude;
+
+					var myLatlng = new google.maps.LatLng(lat, long);
+
+					// Set the mapOptions
+					mapOptions.center = myLatlng;
+					/*var mapOptions = {
+						streetViewControl:true,
+						center: myLatlng,
+						zoom: 18,
+						mapTypeId: google.maps.MapTypeId.ROADMAP
+					};*/
+
+					/*var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+					$scope.map = map;
+					$ionicLoading.hide();      */
+
+				}, function (err) {
+
+					$ionicLoading.hide();
+					console.log(err);
+				});
+
+
+				// Define the map
+				var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+				//Marker + infowindow + angularjs compiled ng-click - need for $compile
+				/*var contentString = "<div><a ng-click='clickTest()'>Click me!</a></div>";
+				var compiled = $compile(contentString)($scope);
+
+				var infowindow = new google.maps.InfoWindow({
+				  content: compiled[0]
+				});*/
+
+				var marker = new google.maps.Marker({
+					position: mapOptions.center,
+					map: map,
+					title: 'This place (or default Location)'
+				});
+	console.log(mapOptions.center);
+				var goalRoute = new google.maps.Marker({
+					position: goal,
+					map: map,
+					title: 'Restaurant (conFusion)'
+				});
+
+				var infowindow = new google.maps.InfoWindow({
+					content: "Your Location"
+				});
+
+				infowindow.open(map, marker);
+
+				var goalwindow = new google.maps.InfoWindow({
+					content: "Restaurant conFusion"
+				});
+
+				goalwindow.open(map, goalRoute);
+
+				google.maps.event.addListener(marker, 'click', function () {
+					infowindow.open(map, marker);
+				});
+
+				$scope.map = map;
+
+
+				// Get directions from here to there
+				var directionsService = new google.maps.DirectionsService();
+				var directionsDisplay = new google.maps.DirectionsRenderer();
+
+				var request = {
+					origin: mapOptions.center,
+					destination: goal,
+					travelMode: google.maps.TravelMode.DRIVING
+				};
+				directionsService.route(request, function (response, status) {
+					if (status == google.maps.DirectionsStatus.OK) {
+						directionsDisplay.setDirections(response);
+					}
+				});
+
+				directionsDisplay.setMap(map);
+
+//			}
+
+
+			// It all starts here really
+			// google.maps.event.addDomListener(window, 'load', initialize);
+
+			// Find me if not found already
+			$scope.centerOnMe = function () {
+				if (!$scope.map) {
+					return;
+				}
+
+				$scope.loading = $ionicLoading.show({
+					content: 'Getting current location...',
+					showBackdrop: false
+				});
+				navigator.geolocation.getCurrentPosition(function (pos) {
+					$scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+					$scope.loading.hide();
+				}, function (error) {
+					alert('Unable to get location: ' + error.message);
+				});
+			};
+
+			$scope.clickTest = function () {
+				alert('Example of info window with ng-click')
+			};
+		});
+	})
 
 	// Custom filter for filtering out favorites
 	.filter('favoriteFilter', function () {

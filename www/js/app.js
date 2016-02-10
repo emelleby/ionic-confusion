@@ -111,7 +111,19 @@ angular.module('conFusion', ['ionic', 'ngCordova', 'conFusion.controllers','conF
 		  url: '/contactus',
 		  views: {
 			'mainContent': {
-			  templateUrl: 'templates/contactus.html'
+			  templateUrl: 'templates/contactus.html',
+				controller: 'ContactController'
+			}
+		  }
+		})
+
+
+	   .state('app.map', {
+		  url: '/map',
+		  views: {
+			'mainContent': {
+			  templateUrl: 'templates/map.html',
+				controller: 'MapController'
 			}
 		  }
 		})
