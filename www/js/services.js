@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('conFusion.services', ['ngResource'])
-.constant("baseURL", "https://heroku-server-coursera.herokuapp.com/")
-	//.constant("baseURL","http://192.168.1.101:3000/") // 192.168.1.104 , localhost
+
+	.constant("baseURL","http://192.168.1.101:3000/") // 192.168.1.104 , localhost
 
 	.factory('menuFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
