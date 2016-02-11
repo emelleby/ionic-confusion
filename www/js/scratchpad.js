@@ -46,3 +46,47 @@
       }
     }
   }])
+
+ // Take picture and upload picture
+  $ionicPlatform.ready(function() {
+        var options = {
+          quality: 50,
+          destinationType: Camera.DestinationType.DATA_URL,
+          sourceType: Camera.PictureSourceType.CAMERA,
+          allowEdit: true,
+          encodingType: Camera.EncodingType.JPEG,
+          targetWidth: 100,
+          targetHeight: 100,
+          popoverOptions: CameraPopoverOptions,
+          saveToPhotoAlbum: false
+        };
+        $scope.takePicture = function() {
+          $cordovaCamera.getPicture(options).then(function (imageData) {
+            $scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
+          }, function (err) {
+            console.log(err);
+          });
+
+          $scope.registerform.show();
+        };
+
+          var optionsSel = {
+            maximumImagesCount: 1,
+            width: 100,
+            height: 100,
+            quality: 50
+          };
+          $scope.selectPicture = function() {
+            $cordovaImagePicker.getPictures(optionsSel).then(function (results) {
+              for (var i = 0; i < results.length; i++) {
+                console.log('Image URI: ' + results[i]);
+                $scope.registration.imgSrc = results[i];
+              }
+            }, function (error) {
+              console.log(error);
+            });
+
+            $scope.registerform.show();
+          };
+
+      });

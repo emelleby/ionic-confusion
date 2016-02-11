@@ -470,7 +470,9 @@ console.log($scope.map);
 		   // Hide the popover?
 			$scope.closePopover();
 
-			// Notification and Toast
+
+
+// Notification and Toast
 			$ionicPlatform.ready(function () {
                 $cordovaLocalNotification.schedule({
                     id: 1,
@@ -493,7 +495,7 @@ console.log($scope.map);
                   });
         	});
 
-		}
+		};
 
 		// Form data for the comment modal
 		$scope.myComment = {rating:5, comment:"", author:"", date:""};

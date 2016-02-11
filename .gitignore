@@ -9,3 +9,4 @@ resources/
 #www/lib/
 #www/img/
 /www/js/map.js
+/www/js/2-controllers.js
